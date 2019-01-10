@@ -2,9 +2,10 @@ import logging; logging.basicConfig(level=logging.INFO)
 
 from aiohttp import web
 
-async def index(request):
-    return web.Response(body=b'<h1>Python Web App</h1>', content_type='text/html')
+from settings import config
+from routes import setup_routes
 
 app = web.Application()
-app.add_routes([web.get('/', index)])
-web.run_app(app)
+setup_routes(app)
+app['config'] = config
+web.run_app(app, host=app['config']['postgres']['host'], port=int(app['config']['postgres']['port']))
